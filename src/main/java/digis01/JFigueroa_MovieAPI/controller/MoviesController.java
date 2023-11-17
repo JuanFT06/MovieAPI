@@ -38,25 +38,26 @@ public class MoviesController {
 
         // get favorite movies
         Result responseFavorites = restTemplate.getForObject("https://api.themoviedb.org/3/account/" + usuario.getId()
-                + "/favorite/movies" + "?session_id=" + usuario.getSession_id() +
-                "&api_key=29ffbfc8417ce43b494ff1a5a6abe5e7", Result.class);
+                + "/favorite/movies" + "?session_id=" + usuario.getSession_id()
+                + "&api_key=29ffbfc8417ce43b494ff1a5a6abe5e7", Result.class);
         List<Movie> favoritesMovies = responseFavorites.getResults();
 
-      for(int i=0;i<movies.size();i++){
-        for (int j = 0; j < favoritesMovies.size(); j++) {
-            if (favoritesMovies.get(j).getId()==movies.get(i).getId()) {
-                movies.get(i).setFavorite(true);
+        for (int i = 0; i < movies.size(); i++) {
+            for (int j = 0; j < favoritesMovies.size(); j++) {
+                if (favoritesMovies.get(j).getId() == movies.get(i).getId()) {
+                    movies.get(i).setFavorite(true);
+                }
             }
         }
-      }
 
-        model.addAttribute("cuentaid",usuario.getId());
+        model.addAttribute("cuentaid", usuario.getId());
+        model.addAttribute("sessionid", usuario.getSession_id());
         model.addAttribute("movies", movies);
         return "popular";
     }
 
     @GetMapping("top-rated")
-    public String topRated(Model model) {
+    public String topRated(Model model, HttpSession session) {
 
         RestTemplate restTemplate = new RestTemplate();
         Result response = restTemplate.getForObject(
@@ -64,6 +65,23 @@ public class MoviesController {
                 Result.class);
         List<Movie> movies = response.getResults();
 
+        User usuario = (User) session.getAttribute("usuario");
+
+        // get favorite movies
+        Result responseFavorites = restTemplate.getForObject("https://api.themoviedb.org/3/account/" + usuario.getId()
+                + "/favorite/movies" + "?session_id=" + usuario.getSession_id()
+                + "&api_key=29ffbfc8417ce43b494ff1a5a6abe5e7", Result.class);
+        List<Movie> favoritesMovies = responseFavorites.getResults();
+
+        for (int i = 0; i < movies.size(); i++) {
+            for (int j = 0; j < favoritesMovies.size(); j++) {
+                if (favoritesMovies.get(j).getId() == movies.get(i).getId()) {
+                    movies.get(i).setFavorite(true);
+                }
+            }
+        }
+        model.addAttribute("cuentaid", usuario.getId());
+        model.addAttribute("sessionid", usuario.getSession_id());
         model.addAttribute("movies", movies);
         return "popular";
     }
@@ -73,7 +91,7 @@ public class MoviesController {
 
         RestTemplate restTemplate = new RestTemplate();
         Result response = restTemplate.getForObject(
-                "https://api.themoviedb.org/3/tv/on_the_air" + "?api_key=29ffbfc8417ce43b494ff1a5a6abe5e7",
+                "https://api.themoviedb.org/3/tv/popular" + "?api_key=29ffbfc8417ce43b494ff1a5a6abe5e7",
                 Result.class);
         List<Movie> movies = response.getResults();
 
@@ -95,12 +113,29 @@ public class MoviesController {
     }
 
     @GetMapping("detalle/{idmovie}")
-    public String delatte(@PathVariable("idmovie") int idmovie, Model model) {
+    public String delatte(@PathVariable("idmovie") int idmovie, Model model, HttpSession session) {
         RestTemplate restTemplate = new RestTemplate();
         Movie movie = restTemplate.getForObject(
                 "https://api.themoviedb.org/3/movie/" + idmovie + "?api_key=29ffbfc8417ce43b494ff1a5a6abe5e7",
                 Movie.class);
 
+        User usuario = (User) session.getAttribute("usuario");
+
+        // get favorite movies
+        Result responseFavorites = restTemplate.getForObject("https://api.themoviedb.org/3/account/" + usuario.getId()
+                + "/favorite/movies" + "?session_id=" + usuario.getSession_id()
+                + "&api_key=29ffbfc8417ce43b494ff1a5a6abe5e7", Result.class);
+        List<Movie> favoritesMovies = responseFavorites.getResults();
+
+        for (int j = 0; j < favoritesMovies.size(); j++) {
+            if (favoritesMovies.get(j).getId() == movie.getId()) {
+                movie.setFavorite(true);
+                break;
+            }
+        }
+
+        model.addAttribute("cuentaid", usuario.getId());
+        model.addAttribute("sessionid", usuario.getSession_id());
         model.addAttribute(movie);
         return "detalle";
     }

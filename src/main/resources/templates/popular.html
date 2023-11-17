@@ -2,95 +2,90 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layaout"
       layout:decorate="~{layout}">
-    <head>
-        <title>Lista de usuarios</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous"><!--  -->
-        <!--     <link th:href="@{/styles.css}" rel="stylesheet" />-->
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    </head>
-    <body style="background-color: #2f2d2d;">
-        <div class="container mt-4" layout:fragment="body" style="min-height: 500px">
+
+    <div class="container mt-4" layout:fragment="body" style="min-height: 500px">
 
 
 
-            <div class="row col-12 mt-4" id="resultsContainer">
-                <input id="cuentaid" th:value="${cuentaid}" hidden="true"/>
-                <div class="col-4" th:each="movie:${movies}">
-                    <div class="card p-2 m-2">
-                        <img th:src="'https://image.tmdb.org/t/p/w300/'+${movie.poster_path}" class="card-img-top" alt="...">
+        <div class="row col-12 mt-4" id="resultsContainer">
+            <input id="cuentaid" th:value="${cuentaid}" hidden="true"/>
+            <input id="sessionid" th:value="${sessionid}" hidden="true"/>
+            <div class="col-3" th:each="movie:${movies}">
+                <div class="card p-2 m-2" style="min-height:  200px">
+                    <img th:src="'https://image.tmdb.org/t/p/w200/'+${movie.poster_path}" class="card-img-top" style="max-width:100%">
 
-                        <i class="bi bi-heart-fill"  th:id="'movie' + ${movie.id}"  th:class="${movie.favorite==true}? bi-heart-fill : bi-heart" th:onclick="setFavorite([[${movie.id}]])"></i>
+                    <i class="bi bi-heart-fill"  th:id="'movie' + ${movie.id}"  th:class="${movie.favorite==true}? bi-heart-fill : bi-heart" th:onclick="setFavorite([[${movie.id}]])"></i>
 
-                        <div>
-                            <span th:text="${movie.vote_average}"></span>
-                            <i class="bi bi-star-fill"></i>
+                    <div>
+                        <span th:text="${movie.vote_average}"></span>
+                        <i class="bi bi-star-fill"></i>
+                    </div>
+                    <div class="card-body">
+                        <div th:if="${movie.original_name==null}">
+                            <a th:href="@{/detalle/{idmovie}(idmovie=${movie.id})}" class="nav-link"> <h5 class="card-title" th:text="${movie.title}"></h5>    </a>        
                         </div>
-                        <div class="card-body">
-                            <div th:if="${movie.original_name==null}">
-                                <a th:href="@{/detalle/{idmovie}(idmovie=${movie.id})}" class="nav-link"> <h5 class="card-title" th:text="${movie.title}"></h5>    </a>        
-                            </div>
-                            <div th:if="${movie.original_name!=null}">
-                                <a th:href="@{/detalle-tv/{idmovie}(idmovie=${movie.id})}" class="nav-link"> <h5 class="card-title" th:text="${movie.original_name}"></h5>    </a>        
-                            </div>
-                            <p class="card-text" th:text="${movie.overview}"></p>
-
-
+                        <div th:if="${movie.original_name!=null}">
+                            <a th:href="@{/detalle-tv/{idmovie}(idmovie=${movie.id})}" class="nav-link"> <h5 class="card-title" th:text="${movie.original_name}"></h5>    </a>        
                         </div>
+                        
+
+
                     </div>
                 </div>
-
             </div>
 
         </div>
 
-        <script>
-            function setFavorite(movieid) {
-                var cuentaid = $("#cuentaid").val();
-                var movie = $("#movie" + movieid);
-                var favorite = '';
-                var json = {};
-
-                if (movie.hasClass("bi-heart-fill")) {
-
-                    json = {
-                        "media_type": "movie",
-                        "media_id": movieid,
-                        "favorite": false
-                    }
-                    favorite = 'bi-heart';
-                }
-                if (movie.hasClass("bi-heart")) {
-
-                    json = {
-                        "media_type": "movie",
-                        "media_id": movieid,
-                        "favorite": true
-                    }
-                    favorite = 'bi-heart-fill';
-                }
-
-                $.ajax({
-                    url: "https://api.themoviedb.org/3/account/" + cuentaid + "/favorite",
-                    type: "post",
-                    data: JSON.stringify(json),
-                    Accept: "application/json",
-                    contentType: "application/json",
-                    dataType: "json",
-                    success: function (data) {
-
-                    },
-                    error: function () {
-                        // Muestra el mensaje de error en caso de error en la petición
-                        alert("Error al añadir");
-                    }
-
-                });
-            }
-
-        </script>
-    </body>
-
+    </div>
 
 </html>
+
+<script>
+    function setFavorite(movieid) {
+        var cuentaid = $("#cuentaid").val();
+        var sessionid=$("#sessionid").val();
+        var movie = $("#movie" + movieid);
+        var favorite = '';
+        var json = {};
+
+        if (movie.hasClass("bi-heart-fill")) {
+
+            json = {
+                "media_type": "movie",
+                "media_id": movieid,
+                "favorite": false
+            }
+            favorite = 'bi-heart';
+        }
+        if (movie.hasClass("bi-heart")) {
+
+            json = {
+                "media_type": "movie",
+                "media_id": movieid,
+                "favorite": true
+            }
+            favorite = 'bi-heart-fill';
+        }
+
+        $.ajax({
+            url: "https://api.themoviedb.org/3/account/" + cuentaid +
+                    "/favorite?api_key=29ffbfc8417ce43b494ff1a5a6abe5e7&session_id="+sessionid,
+            type: "post",
+            data: JSON.stringify(json),
+            Accept: "application/json",
+            contentType: "application/json",
+            dataType: "json",
+            success: function (data) {
+                    movie.removeAttr("class");
+                    
+                    movie.addClass(favorite);
+            },
+            error: function () {
+                // Muestra el mensaje de error en caso de error en la petición
+                alert("Error al añadir");
+            }
+
+        });
+    }
+
+</script>

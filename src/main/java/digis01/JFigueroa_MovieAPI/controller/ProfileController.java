@@ -24,12 +24,18 @@ public class ProfileController {
         RestTemplate restTemplate = new RestTemplate();
 
         //get favorite movies
-         Result response = restTemplate.getForObject("https://api.themoviedb.org/3/account/"+usuario.getId()+"/favorite/movies" +"?session_id=" + usuario.getSession_id() +
-                                    "&api_key=29ffbfc8417ce43b494ff1a5a6abe5e7", Result.class);
+        Result response = restTemplate.getForObject("https://api.themoviedb.org/3/account/" + usuario.getId() + "/favorite/movies" + "?session_id=" + usuario.getSession_id()
+                + "&api_key=29ffbfc8417ce43b494ff1a5a6abe5e7", Result.class);
         List<Movie> movies = response.getResults();
 
+        for (Movie movie : movies) {
+            movie.setFavorite(true);
+        }
+
+        model.addAttribute("cuentaid", usuario.getId());
+        model.addAttribute("sessionid", usuario.getSession_id());
         model.addAttribute("movies", movies);
         return "profile";
     }
-    
+
 }

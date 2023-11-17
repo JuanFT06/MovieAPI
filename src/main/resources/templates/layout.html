@@ -8,7 +8,7 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous"><!--  -->
         <!--     <link th:href="@{/styles.css}" rel="stylesheet" />-->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-         
+
         <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.css" />
 
         <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.js"></script>
@@ -20,7 +20,7 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
-                    
+
                     <li class="nav-item active">
                         <a th:href="@{/popular}" class="nav-link text-white" >Popular</a>
                     </li>
@@ -33,18 +33,23 @@
                     <li class="nav-item">
                         <a th:href="@{/airing-today}" class="nav-link text-white" >Airing Today</a>
                     </li>
-                    <li class="nav-item" th:if='${#ctx.session.usuario !=null}'>
-                        <a th:href="@{/logout}" class="nav-link text-white" >Cerrar sesion</a>
-                    </li>
-                   
+                    
+
                 </ul>
             </div>
-            <a class="nav-link" th:href="@{/profile}" ><span class="navbar-brand" th:if='${#ctx.session.usuario !=null}' th:text="  ${#ctx.session.usuario.username}"/></a>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle"  href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false"><span class="navbar-brand" th:if='${#ctx.session.usuario !=null}' th:text="  ${#ctx.session.usuario.username}"/></a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <li><a class="dropdown-item" th:href="@{/profile}">Ver Perfil</a></li>
+                    <li><a class="dropdown-item" th:href="@{/logout}">Cerrar Sesion</a></li>
+                    
+                </ul>
+            </li>
 
         </nav>
     </header>
     <body>
-        
+
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 
         <div class="container mt-4" layout:fragment="body" style="min-height: 500px">
@@ -52,7 +57,7 @@
         </div>
 
 
-        
+
     </body>
-  
+
 </html>
