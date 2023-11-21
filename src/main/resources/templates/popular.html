@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layaout"
       layout:decorate="~{layout}">
-
+    <body style="background-color: #2f2d2d;">
     <div class="container mt-4" layout:fragment="body" style="min-height: 500px">
 
 
@@ -14,7 +14,7 @@
                 <div class="card p-2 m-2" style="min-height:  200px">
                     <img th:src="'https://image.tmdb.org/t/p/w200/'+${movie.poster_path}" class="card-img-top" style="max-width:100%">
 
-                    <i class="bi bi-heart-fill"  th:id="'movie' + ${movie.id}"  th:class="${movie.favorite==true}? bi-heart-fill : bi-heart" th:onclick="setFavorite([[${movie.id}]])"></i>
+                    <i class="bi"  th:id="'movie' + ${movie.id}"  th:class="${movie.favorite==true}? bi-heart-fill : bi-heart" th:onclick="setFavorite([[${movie.id}]])" style="color: red"></i>
 
                     <div>
                         <span th:text="${movie.vote_average}"></span>
@@ -37,7 +37,7 @@
         </div>
 
     </div>
-
+</body>
 </html>
 
 <script>

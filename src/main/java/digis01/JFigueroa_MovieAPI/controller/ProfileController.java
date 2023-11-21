@@ -1,5 +1,6 @@
 package digis01.JFigueroa_MovieAPI.controller;
 
+import com.google.common.collect.Lists;
 import java.util.List;
 
 import org.springframework.stereotype.Controller;
@@ -13,6 +14,7 @@ import digis01.JFigueroa_MovieAPI.entities.User;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.thymeleaf.util.ListUtils;
 
 @Controller
 public class ProfileController {
@@ -32,9 +34,15 @@ public class ProfileController {
             movie.setFavorite(true);
         }
 
+        // Divide la lista en trozos de tamaño 3
+       List<List<Movie>> movieChunks = Lists.partition(movies, 3);
+
+        // Agrega los trozos al modelo
+        model.addAttribute("movieChunks", movieChunks);
+
         model.addAttribute("cuentaid", usuario.getId());
         model.addAttribute("sessionid", usuario.getSession_id());
-        model.addAttribute("movies", movies);
+      
         return "profile";
     }
 
